@@ -53,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           load: true
-          tags: ${{ inputs.ImageTag }}
+          tags: ${{ steps.ecr.outputs.registry }}/${{ inputs.RepositoryName }}:${{ inputs.ImageTag }}
 
       - name: Docker Push
         id: digest
