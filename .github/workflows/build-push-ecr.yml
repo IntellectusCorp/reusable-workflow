@@ -12,6 +12,23 @@ on:
         required: false
         type: string
         default: latest
+      CacheTo:
+        required: false
+        type: string
+      CacheFrom:
+        required: false
+        type: string
+      BuildArgs:
+        required: false
+        type: string
+      Context:
+        required: false
+        type: string
+        default: .
+      File:
+        required: false
+        type: string
+        default: Dockerfile
       AssumeRoleArn:
         required: true
         type: string
@@ -68,6 +85,11 @@ jobs:
         with:
           load: true
           tags: ${{ steps.tags.outputs.uris }}
+          context: ${{ inputs.Context }}
+          file: ${{ inputs.File }}
+          cache-from: ${{ inputs.CacheFrom }}
+          cache-to: ${{ inputs.CacheTo }}
+          build-args: ${{ inputs.BuildArgs }}
 
       - name: Docker Push
         id: digest
