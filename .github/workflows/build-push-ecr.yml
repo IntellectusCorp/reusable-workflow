@@ -58,5 +58,6 @@ jobs:
       - name: Docker Push
         id: digest
         run: |
-          docker push ${{ steps.ecr.outputs.registry }}/${{ inputs.RepositoryName }}:${{ inputs.ImageTag }}
-          echo "image=$(docker inspect --format '{{index .RepoDigests 0}}' ${{ steps.ecr.outputs.registry }}/workflow-test:latest)" >> "$GITHUB_OUTPUT"
+          Image=${{ steps.ecr.outputs.registry }}/${{ inputs.RepositoryName }}:${{ inputs.ImageTag }}
+          docker push $Image
+          echo "image=$(docker inspect --format '{{index .RepoDigests 0}}' $Image)" >> "$GITHUB_OUTPUT"
