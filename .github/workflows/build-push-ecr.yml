@@ -74,8 +74,9 @@ jobs:
         run: |
           image="${{ steps.tags.outputs.uris }}"
 
-          for uri in $(echo "$image" | tr ','); do
-            docker push $uri
+          raw_uris=($(echo "$image" | tr ','))
+          for uri in "${raw_uris[@]}"; do
+            [[ -n "$uri" ]] && docker push $uri
           done
 
           read -r uri <<< "${image%%,*}"
