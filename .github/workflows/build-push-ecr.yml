@@ -56,12 +56,12 @@ jobs:
 
           raw_tags=($(echo "${{ inputs.ImageTags }}" | tr ',' ' '))
 
-          uris=()
+          uris=""
           for tag in "${raw_tags[@]}"; do
-            [[ -n "$tag" ]] && uris+=("$Image:$tag")
+            [[ -n "$tag" ]] && uris="${uris},${Image}:${tag}"
           done
 
-          echo "uris=${uris[*]}" >> "$GITHUB_OUTPUT"
+          echo "uris=${uris#,}" >> "$GITHUB_OUTPUT"
 
       - name: Docker Build
         uses: docker/build-push-action@v6
@@ -74,10 +74,10 @@ jobs:
         run: |
           image="${{ steps.tags.outputs.uris }}"
 
-          for uri in $image; do
+          for uri in $(echo "$image" | tr ','); do
             docker push $uri
           done
 
-          read -r uri <<< "$image"
+          read -r uri <<< "${image%%,*}"
 
           echo "image=$(docker inspect --format '{{index .RepoDigests 0}}' $uri)" >> "$GITHUB_OUTPUT"
