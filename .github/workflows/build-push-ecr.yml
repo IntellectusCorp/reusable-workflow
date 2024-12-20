@@ -5,7 +5,7 @@ on:
         description: Docker Image Uri
         value: ${{ jobs.build_and_push.outputs.image }}
     inputs:
-      Name:
+      RepositoryName:
         required: true
         type: string
       ImageTag:
@@ -44,7 +44,7 @@ jobs:
       - name: Setup ECR Repository
         uses: deploy-actions/setup-ecr@main
         with:
-          RepositoryName: ${{ inputs.Name }}
+          RepositoryName: ${{ inputs.RepositoryName }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -58,5 +58,5 @@ jobs:
       - name: Docker Push
         id: digest
         run: |
-          docker push ${{ steps.ecr.outputs.registry }}/${{ inputs.Name }}:${{ inputs.ImageTag }}
+          docker push ${{ steps.ecr.outputs.registry }}/${{ inputs.RepositoryName }}:${{ inputs.ImageTag }}
           echo "image=$(docker inspect --format '{{index .RepoDigests 0}}' ${{ steps.ecr.outputs.registry }}/workflow-test:latest)" >> "$GITHUB_OUTPUT"
